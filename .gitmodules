@@ -1,0 +1,21 @@
+[submodule "lib/forge-std"]
+	path = lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "lib/custom-supertokens"]
+	path = lib/custom-supertokens
+	url = https://github.com/superfluid-finance/custom-supertokens
+[submodule "lib/protocol-monorepo"]
+	path = lib/protocol-monorepo
+	url = https://github.com/superfluid-finance/protocol-monorepo
+[submodule "contracts/lib/openzeppelin-contracts"]
+	path = contracts/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "contracts/lib/protocol-monorepo"]
+	path = contracts/lib/protocol-monorepo
+	url = https://github.com/superfluid-finance/protocol-monorepo
+[submodule "contracts/lib/forge-std"]
+	path = contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std

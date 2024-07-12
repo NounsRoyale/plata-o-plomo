@@ -1,0 +1,12 @@
+{
+  "rules": {
+    "no-unused-imports": "off",
+    "custom-errors": "off",
+    "private-vars-leading-underscore": "off",
+    "max-line-length": "off",
+    "const-name-snakecase": "off",
+    "var-name-mixedcase": "off",
+    "func-name-mixedcase": "off",
+    "func-param-name-mixedcase": "off"
+  }
+}
