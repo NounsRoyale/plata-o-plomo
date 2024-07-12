@@ -13,7 +13,6 @@
     "type": "git",
     "url": "https://github.com/NounsRoyale/plata-o-plomo"
   },
-  "author": "Bruno Eleodoro & Nezzar",
   "license": "MIT",
   "contributors": [
     "abalabahaha <hi@abal.moe> (https://github.com/abalabahaha)",
@@ -38,9 +37,9 @@
     "@babel/eslint-parser": "^7.21.8",
     "@babel/preset-env": "^7.21.5",
     "@babel/preset-react": "^7.24.7",
-    "@dynamic-labs/ethereum": "^2.2.10",
-    "@dynamic-labs/sdk-react-core": "^2.2.10",
-    "@dynamic-labs/wagmi-connector": "^2.2.10",
+    "@dynamic-labs/ethereum": "^2.3.0",
+    "@dynamic-labs/sdk-react-core": "^2.3.0",
+    "@dynamic-labs/wagmi-connector": "^2.3.0",
     "@tanstack/react-query": "^5.51.1",
     "@web3modal/ethers5": "^5.0.6",
     "babel-loader": "^9.1.2",
@@ -58,6 +57,7 @@
     "jshint": "^2.13.6",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.1",
+    "permissionless": "^0.1.39",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sat": "^0.9.0",
@@ -66,6 +66,7 @@
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.0",
     "viem": "^2.17.3",
+    "wagmi": "^2.10.10",
     "webpack": "^5.82.1",
     "webpack-stream": "^7.0.0"
   },
