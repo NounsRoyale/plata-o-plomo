@@ -25,7 +25,6 @@ const Provider = ({ children }) => {
             settings={{
                 environmentId: "c8ca5061-e827-44b4-a836-333ed59bd5a4",
                 walletConnectors: [EthereumWalletConnectors],
-                walletConnectors: [EthereumWalletConnectors],
             }}
         >
             <WagmiProvider config={config}>

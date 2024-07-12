@@ -3,27 +3,22 @@ import {
     useDynamicContext,
     DynamicConnectButton,
     DynamicWidget,
-    useUserWallets,
 } from "@dynamic-labs/sdk-react-core";
 import {
     createSmartAccountClient,
     walletClientToSmartAccountSigner,
 } from "permissionless";
 import { signerToSimpleSmartAccount } from "permissionless/accounts";
-import { createPimlicoPaymasterClient } from "permissionless/clients/pimlico";
+import {
+    createPimlicoPaymasterClient,
+    createPimlicoBundlerClient,
+} from "permissionless/clients/pimlico";
 import { zeroAddress, http } from "viem";
 import { useWalletClient } from "wagmi";
 
 const ConnectButton = () => {
-    const { isAuthenticated, primaryWallet } = useDynamicContext();
-    const wallets = useUserWallets();
+    const { isAuthenticated } = useDynamicContext();
     const { data: walletClient } = useWalletClient();
-
-    console.log({
-        isAuthenticated,
-        primaryWallet,
-        wallets,
-    });
 
     return (
         <>
@@ -56,11 +51,19 @@ const ConnectButton = () => {
                             const pimlicoUrl = `https://api.pimlico.io/v2/${chain.id}/rpc?apikey=${pimlicoKey}`;
 
                             try {
+                                console.log(1);
                                 const customSigner =
                                     walletClientToSmartAccountSigner(
                                         walletClient
                                     );
 
+                                const bundler = createPimlicoBundlerClient({
+                                    transport: http(pimlicoUrl),
+                                    entryPoint:
+                                        "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+                                });
+
+                                console.log(2);
                                 const pimlicoPaymasterClient =
                                     createPimlicoPaymasterClient({
                                         chain,
@@ -69,6 +72,7 @@ const ConnectButton = () => {
                                             "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
                                     });
 
+                                console.log(3);
                                 const simpleSmartAccountClient =
                                     await signerToSimpleSmartAccount(
                                         walletClient,
@@ -81,24 +85,36 @@ const ConnectButton = () => {
                                         }
                                     );
 
+                                console.log(4);
                                 const smartAccountClient =
                                     createSmartAccountClient({
                                         account: simpleSmartAccountClient,
+                                        bundlerTransport: http(pimlicoUrl),
                                         chain, // or whatever chain you are using
-                                        transport: http(pimlicoUrl),
-                                        sponsorUserOperation:
-                                            pimlicoPaymasterClient.sponsorUserOperation, // if using a paymaster
+                                        // transport: http(pimlicoUrl),
+                                        middleware: {
+                                            gasPrice: async () =>
+                                                (
+                                                    await bundler.getUserOperationGasPrice()
+                                                ).fast,
+                                            sponsorUserOperation:
+                                                pimlicoPaymasterClient.sponsorUserOperation,
+                                        },
                                     });
 
-                                await smartAccountClient.sendTransaction({
-                                    to: zeroAddress,
-                                    data: "0x0",
-                                    value: BigInt(1),
-                                });
+                                console.log(5);
+                                const res =
+                                    await smartAccountClient.sendTransaction({
+                                        to: zeroAddress,
+                                        data: "0x0",
+                                        value: BigInt(0),
+                                    });
+
+                                console.log({ res });
 
                                 // alert(hash);
                             } catch (error) {
-                                console.log(error);
+                                console.log({ error });
                             }
                         }}
                     >
