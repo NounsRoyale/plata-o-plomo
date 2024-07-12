@@ -83,8 +83,9 @@ class Cell {
 }
 
 exports.Player = class {
-    constructor(id) {
+    constructor(id, img) {
         this.id = id;
+        this.img = img;
         this.hue = Math.round(Math.random() * 360);
         this.name = null;
         this.admin = false;

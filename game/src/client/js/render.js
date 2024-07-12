@@ -6,11 +6,11 @@ const drawRoundObject = (position, radius, graph) => {
     graph.closePath();
     graph.fill();
     graph.stroke();
-}
+};
 
 const drawFood = (position, food, graph) => {
-    graph.fillStyle = 'hsl(' + food.hue + ', 100%, 50%)';
-    graph.strokeStyle = 'hsl(' + food.hue + ', 100%, 45%)';
+    graph.fillStyle = "hsl(" + food.hue + ", 100%, 50%)";
+    graph.strokeStyle = "hsl(" + food.hue + ", 100%, 45%)";
     graph.lineWidth = 0;
     drawRoundObject(position, food.radius, graph);
 };
@@ -33,28 +33,28 @@ const drawVirus = (position, virus, graph) => {
 };
 
 const drawFireFood = (position, mass, playerConfig, graph) => {
-    graph.strokeStyle = 'hsl(' + mass.hue + ', 100%, 45%)';
-    graph.fillStyle = 'hsl(' + mass.hue + ', 100%, 50%)';
+    graph.strokeStyle = "hsl(" + mass.hue + ", 100%, 45%)";
+    graph.fillStyle = "hsl(" + mass.hue + ", 100%, 50%)";
     graph.lineWidth = playerConfig.border + 2;
     drawRoundObject(position, mass.radius - 1, graph);
 };
 
-const valueInRange = (min, max, value) => Math.min(max, Math.max(min, value))
+const valueInRange = (min, max, value) => Math.min(max, Math.max(min, value));
 
 const circlePoint = (origo, radius, theta) => ({
     x: origo.x + radius * Math.cos(theta),
-    y: origo.y + radius * Math.sin(theta)
+    y: origo.y + radius * Math.sin(theta),
 });
 
 const cellTouchingBorders = (cell, borders) =>
     cell.x - cell.radius <= borders.left ||
     cell.x + cell.radius >= borders.right ||
     cell.y - cell.radius <= borders.top ||
-    cell.y + cell.radius >= borders.bottom
+    cell.y + cell.radius >= borders.bottom;
 
 const regulatePoint = (point, borders) => ({
     x: valueInRange(borders.left, borders.right, point.x),
-    y: valueInRange(borders.top, borders.bottom, point.y)
+    y: valueInRange(borders.top, borders.bottom, point.y),
 });
 
 const drawCellWithLines = (cell, borders, graph) => {
@@ -72,7 +72,7 @@ const drawCellWithLines = (cell, borders, graph) => {
     graph.closePath();
     graph.fill();
     graph.stroke();
-}
+};
 
 const drawCells = (cells, playerConfig, toggleMassState, borders, graph) => {
     for (let cell of cells) {
@@ -94,18 +94,67 @@ const drawCells = (cells, playerConfig, toggleMassState, borders, graph) => {
         graph.fillStyle = playerConfig.textColor;
         graph.strokeStyle = playerConfig.textBorder;
         graph.miterLimit = 1;
-        graph.lineJoin = 'round';
-        graph.textAlign = 'center';
-        graph.textBaseline = 'middle';
-        graph.font = 'bold ' + fontSize + 'px sans-serif';
-        graph.strokeText(cell.name, cell.x, cell.y);
-        graph.fillText(cell.name, cell.x, cell.y);
+        graph.lineJoin = "round";
+        graph.textAlign = "center";
+        graph.textBaseline = "middle";
+        graph.font = "bold " + fontSize + "px sans-serif";
+        // graph.strokeText(cell.name, cell.x, cell.y);
+        // graph.fillText(cell.name, cell.x, cell.y);
+        // if(cell.name === 'dog') {
+        // <div id="noun1" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_1.png"
+        //             class="rounded-lg" data-name="noun1" />
+        //     </div>
+        //     <div id="noun2" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_2.png"
+        //             class="rounded-lg" data-name="noun2" />
+        //     </div>
+        //     <div id="noun3" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun.png"
+        //             class="rounded-lg" data-name="noun3" />
+        //     </div>
+        //     <div id="noun4" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_3.png"
+        //             class="rounded-lg" data-name="noun4" />
+        //     </div>
+        cell.skin = new Image();
+        if (cell.img === "noun1") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_1.png";
+        } else if (cell.img === "noun2") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_2.png";
+        } else if (cell.img === "noun3") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun.png";
+        } else if (cell.img === "noun4") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_3.png";
+        }
+
+        graph.save();
+        graph.beginPath();
+        graph.arc(cell.x, cell.y, cell.radius, 0, FULL_ANGLE);
+        graph.clip();
+        graph.drawImage(
+            cell.skin,
+            cell.x - cell.radius,
+            cell.y - cell.radius,
+            2 * cell.radius,
+            2 * cell.radius
+        );
+        graph.restore();
+
+        // graph.drawImage(cell.skin, cell.x - cell.radius, cell.y - cell.radius, 2 * cell.radius, 2 * cell.radius);
+        // }
 
         // Draw the mass (if enabled)
         if (toggleMassState === 1) {
-            graph.font = 'bold ' + Math.max(fontSize / 3 * 2, 10) + 'px sans-serif';
+            graph.font =
+                "bold " + Math.max((fontSize / 3) * 2, 10) + "px sans-serif";
             if (cell.name.length === 0) fontSize = 0;
             graph.strokeText(Math.round(cell.mass), cell.x, cell.y + fontSize);
+            // TODO: bring back the text if you want
             graph.fillText(Math.round(cell.mass), cell.x, cell.y + fontSize);
         }
     }
@@ -133,24 +182,24 @@ const drawGrid = (global, player, screen, graph) => {
 
 const drawBorder = (borders, graph) => {
     graph.lineWidth = 1;
-    graph.strokeStyle = '#000000'
-    graph.beginPath()
+    graph.strokeStyle = "#000000";
+    graph.beginPath();
     graph.moveTo(borders.left, borders.top);
     graph.lineTo(borders.right, borders.top);
     graph.lineTo(borders.right, borders.bottom);
     graph.lineTo(borders.left, borders.bottom);
-    graph.closePath()
+    graph.closePath();
     graph.stroke();
 };
 
 const drawErrorMessage = (message, graph, screen) => {
-    graph.fillStyle = '#333333';
+    graph.fillStyle = "#333333";
     graph.fillRect(0, 0, screen.width, screen.height);
-    graph.textAlign = 'center';
-    graph.fillStyle = '#FFFFFF';
-    graph.font = 'bold 30px sans-serif';
+    graph.textAlign = "center";
+    graph.fillStyle = "#FFFFFF";
+    graph.font = "bold 30px sans-serif";
     graph.fillText(message, screen.width / 2, screen.height / 2);
-}
+};
 
 module.exports = {
     drawFood,
@@ -159,5 +208,5 @@ module.exports = {
     drawCells,
     drawErrorMessage,
     drawGrid,
-    drawBorder
+    drawBorder,
 };

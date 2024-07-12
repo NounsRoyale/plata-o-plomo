@@ -1,10 +1,21 @@
+const React = require("react")
+const ReactDOM = require('react-dom/client');
 var io = require("socket.io-client");
 var render = require("./render");
 var ChatClient = require("./chat-client");
 var Canvas = require("./canvas");
 var global = require("./global");
-var http = require("viem").http;
-var mainnet = require("viem/chains").mainnet;
+
+const { default: ConnectButton } = require("../react/ConnectButton");
+const { default: Provider } = require("../react/Provider");
+
+ReactDOM.createRoot(document.getElementById('connect-button')).render(
+  <React.StrictMode>
+    <Provider>
+      <ConnectButton />
+    </Provider>
+  </React.StrictMode>,
+)
 
 var playerNameInput = document.getElementById("playerNameInput");
 var socket;
@@ -20,9 +31,9 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
 }
 
 function startGame(type) {
-    global.playerName = playerNameInput.value
-        .replace(/(<([^>]+)>)/gi, "")
-        .substring(0, 25);
+    // global.playerName = playerNameInput.value
+    //     .replace(/(<([^>]+)>)/gi, "")
+    //     .substring(0, 25);
     global.playerType = type;
 
     global.screen.width = window.innerWidth;
@@ -32,7 +43,8 @@ function startGame(type) {
     document.getElementById("startMenuWrapper").style.display = "none";
     document.getElementById("gameAreaWrapper").style.opacity = 1;
     if (!socket) {
-        socket = io({ query: "type=" + type });
+        // socket = io({ query: "type=" + type });
+        socket = io({ query: "type=" + type + "&img=" + global.img });
         setupSocket(socket);
     }
     if (!global.animLoopHandle) animloop();
@@ -45,81 +57,36 @@ function startGame(type) {
 
 // Checks if the nick chosen contains valid alphanumeric characters (and underscores).
 function validNick() {
-    var regex = /^\w*$/;
-    debug("Regex Test", regex.exec(playerNameInput.value));
-    return regex.exec(playerNameInput.value) !== null;
+    // var regex = /^\w*$/;
+    // debug("Regex Test", regex.exec(playerNameInput.value));
+    // return regex.exec(playerNameInput.value) !== null;
+    return true;
 }
 
 window.onload = function () {
-    const {
-        createWeb3Modal,
-        defaultConfig,
-    } = require("@web3modal/ethers5/react");
-
-    const React = require("react");
-    const ReactDOM = require("react-dom/client");
-    const projectId = "48db578aadef4ed3012c512fb5f449d1";
-
-    // 2. Set chains
-    const mainnet = {
-        chainId: 1,
-        name: "Ethereum",
-        currency: "ETH",
-        explorerUrl: "https://etherscan.io",
-        rpcUrl: "https://cloudflare-eth.com",
-    };
-
-    // 3. Create your application's metadata object
-    const metadata = {
-        name: "My Website",
-        description: "My Website description",
-        url: "https://mywebsite.com", // url must match your domain & subdomain
-        icons: ["https://avatars.mywebsite.com/"],
-    };
-
-    // 4. Create Ethers config
-    const ethersConfig = defaultConfig({
-        /*Required*/
-        metadata,
-
-        /*Optional*/
-        enableEIP6963: true, // true by default
-        enableInjected: true, // true by default
-        enableCoinbase: true, // true by default
-        rpcUrl: "...", // used for the Coinbase SDK
-        defaultChainId: 1, // used for the Coinbase SDK
-    });
-
-    // 5. Create a Web3Modal instance
-    const modal = createWeb3Modal({
-        ethersConfig,
-        chains: [mainnet],
-        projectId,
-        enableAnalytics: true, // Optional - defaults to your Cloud configuration
-        enableOnramp: true, // Optional - false as default
-    });
-    // const root = ReactDOM.createRoot(document.getElementById("root"));
-    // root.render(
-    //     <React.StrictMode>
-    //         <App />
-    //     </React.StrictMode>
-    // );
-
     var btn = document.getElementById("startButton"),
         btnS = document.getElementById("spectateButton"),
         nickErrorText = document.querySelector("#startMenu .input-error");
-
+    console.log("Loaded", btn);
     btnS.onclick = function () {
         startGame("spectator");
     };
 
+    // whenever an image is selected, it should set the global.playerName to the image name
+    document.querySelectorAll("img").forEach((img) => {
+        img.addEventListener("click", () => {
+            global.playerName = img.getAttribute("data-name");
+            global.img = img.getAttribute("data-name");
+            document.querySelectorAll("img").forEach((resetImg) => {
+                resetImg.style.border = "";
+            });
+            img.style.border = "2px solid blue"; // Highlight the selected image
+        });
+    });
     btn.onclick = function () {
         // Checks if the nick is valid.
         if (validNick()) {
-            nickErrorText.style.opacity = 0;
             startGame("player");
-        } else {
-            nickErrorText.style.opacity = 1;
         }
     };
 
@@ -139,10 +106,7 @@ window.onload = function () {
 
         if (key === global.KEY_ENTER) {
             if (validNick()) {
-                nickErrorText.style.opacity = 0;
                 startGame("player");
-            } else {
-                nickErrorText.style.opacity = 1;
             }
         }
     });
@@ -193,6 +157,8 @@ roundFoodSetting.onchange = settings.toggleRoundFood;
 
 var c = window.canvas.cv;
 var graph = c.getContext("2d");
+// is it possible to add an image to thie graph
+// graph.drawImage('img', 0, 0, 100, 100);
 
 $("#feed").click(function () {
     socket.emit("1");
@@ -320,6 +286,7 @@ function setupSocket(socket) {
                 player.x = playerData.x;
                 player.y = playerData.y;
                 player.hue = playerData.hue;
+                player.img = playerData.img;
                 player.massTotal = playerData.massTotal;
                 player.cells = playerData.cells;
             }
@@ -338,7 +305,7 @@ function setupSocket(socket) {
             document.getElementById("gameAreaWrapper").style.opacity = 0;
             document.getElementById("startMenuWrapper").style.maxHeight =
                 "1000px";
-            document.getElementById("gameAreaWrapper").style.display = "block";
+            document.getElementById("startMenuWrapper").style.display = "block";
             if (global.animLoopHandle) {
                 window.cancelAnimationFrame(global.animLoopHandle);
                 global.animLoopHandle = undefined;
@@ -432,6 +399,7 @@ function gameLoop() {
                     borderColor: borderColor,
                     mass: users[i].cells[j].mass,
                     name: users[i].name,
+                    img: users[i].img,
                     radius: users[i].cells[j].radius,
                     x: users[i].cells[j].x - player.x + global.screen.width / 2,
                     y:

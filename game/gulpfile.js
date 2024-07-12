@@ -20,7 +20,7 @@ function runServer(done) {
         delay: 10,
         script: './bin/server/server.js',
         ignore: ['bin/'],
-        ext: 'js html css',
+        ext: 'js jsx html css',
         done,
         tasks: [process.env.IS_DEV ? 'dev' : 'build']
     })

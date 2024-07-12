@@ -4,7 +4,7 @@
 <head>
     <!-- Meta Properties -->
     <meta charset="UTF-8">
-    <title>Open Agar</title>
+    <title>Plata o Plomo</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <!-- CSS -->
@@ -54,44 +54,40 @@
             </div>
         </nav>
         <div id="startMenu" class="relative w-[30rem] mx-auto mt-24 w-88 p-5 rounded bg-transparent box-border">
-            <p class="text-center text-5xl font-bold">Nouns AGAR</p>
+            <p class="text-center text-5xl font-bold">Plata o Plomo?</p>
             <!-- <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="playerNameInput"
                 maxlength="25"
                 class="w-full text-center p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:border-gray-400 focus:shadow-md" />
             <b class="input-error text-red-500 opacity-0 text-xs">Nick must be alphanumeric characters only!</b> -->
             <br />
-            <!-- <a onclick="document.getElementById('spawn_cell').play();">
-                <button id="startButton"
-                    class="relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400">Play</button>
-            </a> -->
-            <div id="root">
+
+            <div id="root" class="flex items-center justify-center">
                 <w3m-button></w3m-button>
                 <!-- <w3m-network-button></w3m-network-button> -->
             </div>
+            <br />
 
             <div class="flex gap-4">
-                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                <div id="noun1" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
                     <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_1.png"
-                        class="rounded-lg" />
+                        class="rounded-lg" data-name="noun1" />
                 </div>
-                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                <div id="noun2" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
                     <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_2.png"
-                        class="rounded-lg" />
+                        class="rounded-lg" data-name="noun2" />
                 </div>
-                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                <div id="noun3" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
                     <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun.png"
-                        class="rounded-lg" />
+                        class="rounded-lg" data-name="noun3" />
                 </div>
-                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                <div id="noun4" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
                     <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_3.png"
-                        class="rounded-lg" />
+                        class="rounded-lg" data-name="noun4" />
                 </div>
             </div>
-            <button id="spectateButton"
-                class="relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400">Spectate</button>
-            <!-- <button id="settingsButton"
-                class="relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400">Settings</button>
-            <div id="connect"></div>
+            <br />
+            <div id="connect-button"></div>
+            
             <br />
             <div id="settings" class="transition-[max-height] duration-1000 overflow-hidden max-h-0">
                 <h3 class="pb-0 mb-0">Settings</h3>
@@ -104,9 +100,10 @@
                     <label><input id="roundFood" type="checkbox" checked> Rounded food</label>
                     <label><input id="darkMode" type="checkbox"> Toggle Dark Mode</label>
                 </ul>
-            </div> -->
+            </div>
             <div id="instructions">
                 <h3>Gameplay</h3>
+                <br />
                 <ul>
                     <li>Move your mouse on the screen to move your character.</li>
                     <li>Eat food and other players in order to grow your character (food respawns every time a player
@@ -121,6 +118,7 @@
     <!-- JS -->
     <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
     <script type="module" src="js/app.js"></script>
+
 </body>
 
 </html>
