@@ -1,64 +1,126 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <!-- Meta Properties -->
     <meta charset="UTF-8">
     <title>Open Agar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <!-- CSS -->
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@100;300;400;900&display=swap"
+        rel="stylesheet">
+    <!-- <link rel="stylesheet" href="css/main.css" /> -->
     <!-- Audio -->
     <audio id="split_cell" src="audio/split.mp3"></audio>
     <audio id="spawn_cell" src="audio/spawn.mp3"></audio>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Londrina Solid', cursive;
+            background-color: rgb(225, 215, 213);
+        }
+    </style>
 </head>
+
 <body>
-    <div id="gameAreaWrapper">
-        <div id="status"><span class="title">Leaderboard</span></div>
-        <div class="chatbox" id="chatbox">
-            <ul id="chatList" class="chat-list"></ul>
-            <input id="chatInput" type="text" class="chat-input" placeholder="Chat here..." maxlength="35" />
+    <div id="gameAreaWrapper" class="absolute top-0 left-0 opacity-0">
+        <div id="status"
+            class="absolute p-2 bg-black bg-opacity-40 text-white text-lg font-bold text-center top-2 right-2">
+            <span class="title text-2xl">Leaderboard</span>
+        </div>
+        <div id="chatbox"
+            class="chatbox absolute w-72 h-80 bg-black bg-opacity-70 bottom-1 left-1 rounded pointer-events-none">
+            <ul id="chatList" class="chat-list p-1 m-0 list-none box-border h-[285px] overflow-hidden"></ul>
+            <input id="chatInput" type="text"
+                class="chat-input pointer-events-auto box-border w-full p-2 bg-transparent border-none border-t border-gray-300 outline-none"
+                placeholder="Chat here..." maxlength="35" />
         </div>
         <div id="mobile">
-           <input type="image" id="split" class="split" src="img/split.png" alt="splitBtn">
-           <input type="image" id="feed" class="feed" src="img/feed.png" alt="feedBtn">
+            <input type="image" id="split" class="split absolute bottom-2 left-2 w-24 h-24 p-1 border-none"
+                src="img/split.png" alt="splitBtn">
+            <input type="image" id="feed" class="feed absolute bottom-2 right-2 w-24 h-24 p-1 border-none"
+                src="img/feed.png" alt="feedBtn">
         </div>
-        <canvas tabindex="1" id="cvs"></canvas>
+        <canvas tabindex="1" id="cvs" class="w-full h-full bg-black bg-opacity-40"></canvas>
     </div>
-    <div id="startMenuWrapper">
-        <div id="startMenu">
-            <p>Open Agar</p>
-            <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="playerNameInput" maxlength="25" />
-            <b class="input-error">Nick must be alphanumeric characters only!</b>
-            <br />
-            <a onclick="document.getElementById('spawn_cell').play();"><button id="startButton">Play</button></a>
-            <button id="spectateButton">Spectate</button>
-            <button id="settingsButton">Settings</button>
-            <br />
-            <div id="settings">
-                <h3>Settings</h3>
-                <ul>
-                    <label><input id="visBord" type="checkbox">Show border</label>
-                    <label><input id="showMass" type="checkbox">Show mass</label>
-                    <br />
-                    <label><input id="continuity" type="checkbox">Continue moving when mouse is off-screen</label>
-                    <br />
-                    <label><input id="roundFood" type="checkbox" checked>Rounded food</label>
-                    <label><input id="darkMode" type="checkbox">Toggle Dark Mode</label>
-                </ul>
+    <div id="startMenuWrapper" class="z-10 p-12">
+        <nav>
+            <div class="flex">
+                <img src="https://europe1.discourse-cdn.com/standard21/uploads/nouns/original/2X/2/2949af822ff6527c2205d1556651248fd3c908ab.svg"
+                    width="100px" />
             </div>
+        </nav>
+        <div id="startMenu" class="relative w-[30rem] mx-auto mt-24 w-88 p-5 rounded bg-transparent box-border">
+            <p class="text-center text-5xl font-bold">Nouns AGAR</p>
+            <!-- <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="playerNameInput"
+                maxlength="25"
+                class="w-full text-center p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:border-gray-400 focus:shadow-md" />
+            <b class="input-error text-red-500 opacity-0 text-xs">Nick must be alphanumeric characters only!</b> -->
+            <br />
+            <!-- <a onclick="document.getElementById('spawn_cell').play();">
+                <button id="startButton"
+                    class="relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400">Play</button>
+            </a> -->
+            <div id="root">
+                <w3m-button></w3m-button>
+                <!-- <w3m-network-button></w3m-network-button> -->
+            </div>
+
+            <div class="flex gap-4">
+                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                    <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_1.png"
+                        class="rounded-lg" />
+                </div>
+                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                    <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_2.png"
+                        class="rounded-lg" />
+                </div>
+                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                    <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun.png"
+                        class="rounded-lg" />
+                </div>
+                <div class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
+                    <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_3.png"
+                        class="rounded-lg" />
+                </div>
+            </div>
+            <button id="spectateButton"
+                class="relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400">Spectate</button>
+            <!-- <button id="settingsButton"
+                class="relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400">Settings</button>
+            <div id="connect"></div>
+            <br />
+            <div id="settings" class="transition-[max-height] duration-1000 overflow-hidden max-h-0">
+                <h3 class="pb-0 mb-0">Settings</h3>
+                <ul class="m-2 p-2 mt-0">
+                    <label><input id="visBord" type="checkbox"> Show border</label>
+                    <label><input id="showMass" type="checkbox"> Show mass</label>
+                    <br />
+                    <label><input id="continuity" type="checkbox"> Continue moving when mouse is off-screen</label>
+                    <br />
+                    <label><input id="roundFood" type="checkbox" checked> Rounded food</label>
+                    <label><input id="darkMode" type="checkbox"> Toggle Dark Mode</label>
+                </ul>
+            </div> -->
             <div id="instructions">
                 <h3>Gameplay</h3>
                 <ul>
                     <li>Move your mouse on the screen to move your character.</li>
-                    <li>Eat food and other players in order to grow your character (food respawns every time a player eats it).</li>
+                    <li>Eat food and other players in order to grow your character (food respawns every time a player
+                        eats it).</li>
                     <li>A player's mass is the number of food particles eaten.</li>
                     <li>Objective: Try to get fat and eat other players.</li>
                 </ul>
             </div>
         </div>
     </div>
+
     <!-- JS -->
     <script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
+
 </html>
