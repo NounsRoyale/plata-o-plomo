@@ -13,7 +13,7 @@ const ConnectButton = () => {
     const { isAuthenticated } = useDynamicContext();
     const pubClient = usePublicClient();
     const [isLoading, setIsLoading] = React.useState(false);
-    const { account, isInGame, balance } =
+    const { account, isInGame, balance, isReady } =
         React.useContext(SmartAccountContext);
 
     return (
@@ -45,7 +45,6 @@ const ConnectButton = () => {
                         className={`relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400`}
                         disabled={isLoading}
                         onClick={async () => {
-                            console.log(global.img);
                             if (!account) return;
                             setIsLoading(true);
 
@@ -85,7 +84,7 @@ const ConnectButton = () => {
                     >
                         {!account ? (
                             <p>...</p>
-                        ) : isLoading ? (
+                        ) : isLoading || !isReady ? (
                             <div className="flex justify-center">
                                 <svg
                                     class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -125,7 +124,7 @@ const ConnectButton = () => {
                             window.startGame("player", randomEthAddress);
                         }}
                     >
-                        Force without rewards
+                        Play without rewards
                     </button>
                     <br />
                     <button

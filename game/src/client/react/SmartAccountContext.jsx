@@ -18,6 +18,7 @@ export const SmartAccountContext = React.createContext({
     account: null,
     balance: null,
     isInGame: null,
+    isReady: false,
 });
 
 export const AccountProvider = ({ children }) => {
@@ -27,6 +28,7 @@ export const AccountProvider = ({ children }) => {
     const [client, setClient] = React.useState(null);
     const [balance, setBalance] = React.useState(null);
     const [isInGame, setIsInGame] = React.useState(null);
+    const [isReady, setIsReady] = React.useState(false);
 
     const loadAccount = async () => {
         const pimlicoKey = "3fac7f38-a857-468a-a471-20f077048d26";
@@ -90,6 +92,7 @@ export const AccountProvider = ({ children }) => {
         setClient(smartAccountClient);
         setBalance(balance);
         setIsInGame(isInGame);
+        setIsReady(true);
     };
 
     React.useEffect(() => {
@@ -103,6 +106,7 @@ export const AccountProvider = ({ children }) => {
                 account: client,
                 balance,
                 isInGame,
+                isReady,
             }}
         >
             {children}
