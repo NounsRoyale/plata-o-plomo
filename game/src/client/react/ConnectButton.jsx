@@ -13,8 +13,9 @@ import {
     createPimlicoPaymasterClient,
     createPimlicoBundlerClient,
 } from "permissionless/clients/pimlico";
-import { zeroAddress, http } from "viem";
+import { zeroAddress, http, encodeFunctionData } from "viem";
 import { useWalletClient } from "wagmi";
+import { cfaV1Forwarder, gameContract, lifeToken } from "../../contract/game";
 
 const ConnectButton = () => {
     const { isAuthenticated, primaryWallet } = useDynamicContext();
@@ -90,8 +91,7 @@ const ConnectButton = () => {
                                     createSmartAccountClient({
                                         account: simpleSmartAccountClient,
                                         bundlerTransport: http(pimlicoUrl),
-                                        chain, // or whatever chain you are using
-                                        // transport: http(pimlicoUrl),
+                                        chain,
                                         middleware: {
                                             gasPrice: async () =>
                                                 (
@@ -102,19 +102,44 @@ const ConnectButton = () => {
                                         },
                                     });
 
+                                const playerName = primaryWallet.address;
+
                                 console.log(5);
                                 const res =
-                                    await smartAccountClient.sendTransaction({
-                                        to: zeroAddress,
-                                        data: "0x0",
-                                        value: BigInt(0),
+                                    await smartAccountClient.sendTransactions({
+                                        transactions: [
+                                            // {
+                                            //     to: cfaV1Forwarder.address,
+                                            //     data: encodeFunctionData({
+                                            //         abi: cfaV1Forwarder.abi,
+                                            //         functionName:
+                                            //             "grantPermissions",
+                                            //         args: [
+                                            //             lifeToken.address,
+                                            //             gameContract.address,
+                                            //         ],
+                                            //     }),
+                                            //     value: BigInt(0),
+                                            // },
+                                            {
+                                                to: gameContract.address,
+                                                data: encodeFunctionData({
+                                                    abi: gameContract.abi,
+                                                    functionName: "enter",
+                                                    args: [
+                                                        playerName,
+                                                        zeroAddress,
+                                                        "",
+                                                    ],
+                                                }),
+                                                value: BigInt(0),
+                                            },
+                                        ],
                                     });
-                                const playerName = primaryWallet.address;
-                                console.log("playerName", playerName);
-                                window.startGame("player", playerName);
+
                                 console.log({ res });
 
-                                // alert(hash);
+                                window.startGame("player", playerName);
                             } catch (error) {
                                 console.log({ error });
                             }
