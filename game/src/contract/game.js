@@ -126,6 +126,15 @@ const gameContract = {
         },
         {
             type: "function",
+            name: "isInGame",
+            inputs: [
+                { name: "player", type: "address", internalType: "address" },
+            ],
+            outputs: [{ name: "", type: "bool", internalType: "bool" }],
+            stateMutability: "view",
+        },
+        {
+            type: "function",
             name: "life",
             inputs: [],
             outputs: [
@@ -172,6 +181,16 @@ const gameContract = {
             ],
             outputs: [{ name: "", type: "bool", internalType: "bool" }],
             stateMutability: "view",
+        },
+        {
+            type: "function",
+            name: "updateGamePrice",
+            inputs: [
+                { name: "currency", type: "address", internalType: "address" },
+                { name: "price", type: "uint256", internalType: "uint256" },
+            ],
+            outputs: [],
+            stateMutability: "nonpayable",
         },
         {
             type: "function",

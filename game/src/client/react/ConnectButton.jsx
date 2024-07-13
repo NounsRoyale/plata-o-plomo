@@ -14,12 +14,13 @@ import {
     createPimlicoBundlerClient,
 } from "permissionless/clients/pimlico";
 import { zeroAddress, http, encodeFunctionData } from "viem";
-import { useWalletClient } from "wagmi";
+import { usePublicClient, useWalletClient } from "wagmi";
 import { cfaV1Forwarder, gameContract, lifeToken } from "../../contract/game";
 
 const ConnectButton = () => {
     const { isAuthenticated, primaryWallet } = useDynamicContext();
     const { data: walletClient } = useWalletClient();
+    const pubClient = usePublicClient();
 
     return (
         <>
@@ -104,40 +105,57 @@ const ConnectButton = () => {
 
                                 const playerName = primaryWallet.address;
 
-                                console.log(5);
-                                const res =
-                                    await smartAccountClient.sendTransactions({
-                                        transactions: [
-                                            // {
-                                            //     to: cfaV1Forwarder.address,
-                                            //     data: encodeFunctionData({
-                                            //         abi: cfaV1Forwarder.abi,
-                                            //         functionName:
-                                            //             "grantPermissions",
-                                            //         args: [
-                                            //             lifeToken.address,
-                                            //             gameContract.address,
-                                            //         ],
-                                            //     }),
-                                            //     value: BigInt(0),
-                                            // },
-                                            {
-                                                to: gameContract.address,
-                                                data: encodeFunctionData({
-                                                    abi: gameContract.abi,
-                                                    functionName: "enter",
-                                                    args: [
-                                                        playerName,
-                                                        zeroAddress,
-                                                        "",
-                                                    ],
-                                                }),
-                                                value: BigInt(0),
-                                            },
-                                        ],
-                                    });
+                                const isInGame = await pubClient.readContract({
+                                    address: gameContract.address,
+                                    abi: gameContract.abi,
+                                    functionName: "isInGame",
+                                    args: [playerName],
+                                });
 
-                                console.log({ res });
+                                console.log({ isInGame });
+
+                                if (!isInGame) {
+                                    const txs = [];
+
+                                    txs.concat([
+                                        // {
+                                        //     to: cfaV1Forwarder.address,
+                                        //     data: encodeFunctionData({
+                                        //         abi: cfaV1Forwarder.abi,
+                                        //         functionName:
+                                        //             "grantPermissions",
+                                        //         args: [
+                                        //             lifeToken.address,
+                                        //             gameContract.address,
+                                        //         ],
+                                        //     }),
+                                        //     value: BigInt(0),
+                                        // },
+                                        {
+                                            to: gameContract.address,
+                                            data: encodeFunctionData({
+                                                abi: gameContract.abi,
+                                                functionName: "enter",
+                                                args: [
+                                                    playerName,
+                                                    zeroAddress,
+                                                    "",
+                                                ],
+                                            }),
+                                            value: BigInt(0),
+                                        },
+                                    ]);
+
+                                    console.log(5);
+                                    const res =
+                                        await smartAccountClient.sendTransactions(
+                                            {
+                                                transactions: txs,
+                                            }
+                                        );
+
+                                    console.log({ res });
+                                }
 
                                 window.startGame("player", playerName);
                             } catch (error) {

@@ -151,6 +151,10 @@ contract Game is IGame, AccessControlUpgradeable, UUPSUpgradeable {
         gameCurrencies[currency].price = price;
     }
 
+    function isInGame(address player) external view returns (bool) {
+        return _isInGame(player);
+    }
+
     // Internal methods
 
     function _handlePayments(address from, address currency) internal {
