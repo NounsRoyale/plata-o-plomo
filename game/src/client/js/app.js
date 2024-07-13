@@ -1,5 +1,5 @@
-const React = require("react")
-const ReactDOM = require('react-dom/client');
+const React = require("react");
+const ReactDOM = require("react-dom/client");
 var io = require("socket.io-client");
 var render = require("./render");
 var ChatClient = require("./chat-client");
@@ -9,13 +9,13 @@ var global = require("./global");
 const { default: ConnectButton } = require("../react/ConnectButton");
 const { default: Provider } = require("../react/Provider");
 
-ReactDOM.createRoot(document.getElementById('connect-button')).render(
-  <React.StrictMode>
-    <Provider>
-      <ConnectButton />
-    </Provider>
-  </React.StrictMode>,
-)
+ReactDOM.createRoot(document.getElementById("connect-button")).render(
+    <React.StrictMode>
+        <Provider>
+            <ConnectButton />
+        </Provider>
+    </React.StrictMode>
+);
 
 var playerNameInput = document.getElementById("playerNameInput");
 var socket;
@@ -30,10 +30,11 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     global.mobile = true;
 }
 
-function startGame(type) {
+function startGame(type, playerName) {
     // global.playerName = playerNameInput.value
     //     .replace(/(<([^>]+)>)/gi, "")
     //     .substring(0, 25);
+    global.playerName = playerName;
     global.playerType = type;
 
     global.screen.width = window.innerWidth;
@@ -71,11 +72,12 @@ window.onload = function () {
     btnS.onclick = function () {
         startGame("spectator");
     };
+    window.startGame = startGame;
 
     // whenever an image is selected, it should set the global.playerName to the image name
     document.querySelectorAll("img").forEach((img) => {
         img.addEventListener("click", () => {
-            global.playerName = img.getAttribute("data-name");
+            // global.playerName = img.getAttribute("data-name");
             global.img = img.getAttribute("data-name");
             document.querySelectorAll("img").forEach((resetImg) => {
                 resetImg.style.border = "";
@@ -83,12 +85,11 @@ window.onload = function () {
             img.style.border = "2px solid blue"; // Highlight the selected image
         });
     });
-    btn.onclick = function () {
-        // Checks if the nick is valid.
-        if (validNick()) {
-            startGame("player");
-        }
-    };
+    // btn.addEventListener("click", function () {
+    //     if (validNick()) {
+    //         startGame("player");
+    //     }
+    // });
 
     var settingsMenu = document.getElementById("settingsButton");
     var settings = document.getElementById("settings");

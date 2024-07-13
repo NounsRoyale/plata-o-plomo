@@ -17,7 +17,7 @@ import { zeroAddress, http } from "viem";
 import { useWalletClient } from "wagmi";
 
 const ConnectButton = () => {
-    const { isAuthenticated } = useDynamicContext();
+    const { isAuthenticated, primaryWallet } = useDynamicContext();
     const { data: walletClient } = useWalletClient();
 
     return (
@@ -109,7 +109,9 @@ const ConnectButton = () => {
                                         data: "0x0",
                                         value: BigInt(0),
                                     });
-
+                                const playerName = primaryWallet.address;
+                                console.log("playerName", playerName);
+                                window.startGame("player", playerName);
                                 console.log({ res });
 
                                 // alert(hash);

@@ -101,7 +101,7 @@ const addPlayer = (socket, img) => {
 
     socket.on("disconnect", () => {
         map.players.removePlayerByID(currentPlayer.id);
-        // useGameExit("0xDd6d37E29294A985E49fF301Acc80877fC24997F");
+        useGameExit(currentPlayer.name);
         console.log("[INFO] User " + currentPlayer.name + " has disconnected");
         socket.broadcast.emit("playerDisconnect", { name: currentPlayer.name });
     });
