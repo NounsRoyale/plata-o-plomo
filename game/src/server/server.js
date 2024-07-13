@@ -16,7 +16,7 @@ const config = require("../../config");
 const util = require("./lib/util");
 const mapUtils = require("./map/map");
 const { getPosition } = require("./lib/entityUtils");
-const { useGameExit } = require("./web3");
+const { useGameExit, useGameEat } = require("./web3");
 // useGameExit("0xDd6d37E29294A985E49fF301Acc80877fC24997F");
 let map = new mapUtils.Map(config);
 
@@ -383,6 +383,16 @@ const tickGame = () => {
             io.emit("playerDied", { name: playerGotEaten.name }); //TODO: on client it is `playerEatenName` instead of `name`
             sockets[playerGotEaten.id].emit("RIP");
             map.players.removePlayerByIndex(gotEaten.playerIndex);
+            console.log(
+                `[INFO] Player ${
+                    map.players.data[eater.playerIndex].name
+                } ate player ${playerGotEaten.name}`
+            );
+            useGameEat(
+                map.players.data[eater.playerIndex].name,
+                playerGotEaten.name,
+                cellGotEaten.mass
+            );
         }
     });
 };
