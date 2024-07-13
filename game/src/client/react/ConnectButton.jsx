@@ -6,14 +6,17 @@ import {
 } from "@dynamic-labs/sdk-react-core";
 import { zeroAddress, encodeFunctionData, formatEther } from "viem";
 import { usePublicClient } from "wagmi";
-import { gameContract } from "../../contract/game";
+import { appAddresses, gameContract } from "../../contract/game";
 import { SmartAccountContext } from "./SmartAccountContext";
+import { useWalletClient } from "wagmi";
 
 const ConnectButton = () => {
     const { isAuthenticated } = useDynamicContext();
+    const { data: walletClient } = useWalletClient();
+
     const pubClient = usePublicClient();
     const [isLoading, setIsLoading] = React.useState(false);
-    const { account, isInGame, balance, isReady, initialFlowRate } =
+    const { account, isInGame, balance, isReady, initialFlowRate, symbol } =
         React.useContext(SmartAccountContext);
 
     return (
@@ -37,7 +40,9 @@ const ConnectButton = () => {
                             buttonContainerClassName="flex flex-row justify-center w-full"
                         />
                         {balance && (
-                            <p>{formatEther(balance ?? BigInt(0))} $LIFE</p>
+                            <p>
+                                {formatEther(balance ?? BigInt(0))} ${symbol}
+                            </p>
                         )}
                     </div>
                     <button
@@ -57,7 +62,9 @@ const ConnectButton = () => {
 
                                 if (!isInGame) {
                                     const hash = await account.sendTransaction({
-                                        to: gameContract.address,
+                                        to: appAddresses.game[
+                                            walletClient.chain.id
+                                        ],
                                         data: encodeFunctionData({
                                             abi: gameContract.abi,
                                             functionName: "enter",

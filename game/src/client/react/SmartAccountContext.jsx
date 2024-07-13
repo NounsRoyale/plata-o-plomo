@@ -10,7 +10,7 @@ import {
     createPimlicoPaymasterClient,
     createPimlicoBundlerClient,
 } from "permissionless/clients/pimlico";
-import { lifeToken, gameContract } from "../../contract/game";
+import { lifeToken, gameContract, appAddresses } from "../../contract/game";
 
 import { usePublicClient } from "wagmi";
 
@@ -20,6 +20,7 @@ export const SmartAccountContext = React.createContext({
     initialFlowRate: BigInt(0),
     isInGame: null,
     isReady: false,
+    symbol: "",
 });
 
 export const AccountProvider = ({ children }) => {
@@ -30,6 +31,7 @@ export const AccountProvider = ({ children }) => {
     const [balance, setBalance] = React.useState(null);
     const [isInGame, setIsInGame] = React.useState(null);
     const [isReady, setIsReady] = React.useState(false);
+    const [symbol, setSymbol] = React.useState("");
     const [initialFlowRate, setInitialFlowRate] = React.useState(0);
 
     const loadAccount = async () => {
@@ -88,6 +90,8 @@ export const AccountProvider = ({ children }) => {
             },
         });
 
+        console.log(smartAccountClient);
+
         setClient(smartAccountClient);
         setIsReady(true);
     };
@@ -98,29 +102,37 @@ export const AccountProvider = ({ children }) => {
             .multicall({
                 contracts: [
                     {
-                        address: lifeToken.address,
+                        address: appAddresses.token[walletClient.chain.id],
                         abi: erc20Abi,
                         functionName: "balanceOf",
                         args: [client.account.address],
                     },
                     {
-                        address: gameContract.address,
+                        address: appAddresses.game[walletClient.chain.id],
                         abi: gameContract.abi,
                         functionName: "isInGame",
                         args: [client.account.address],
                     },
                     {
-                        address: gameContract.address,
+                        address: appAddresses.game[walletClient.chain.id],
                         abi: gameContract.abi,
                         functionName: "BASE_FLOW_RATE",
+                        args: [],
+                    },
+                    {
+                        address: appAddresses.token[walletClient.chain.id],
+                        abi: erc20Abi,
+                        functionName: "symbol",
                         args: [],
                     },
                 ],
             })
             .then((data) => {
+                console.log({ data });
                 setBalance(data[0].result);
                 setIsInGame(data[1].result);
                 setInitialFlowRate(data[2].result);
+                setSymbol(data[3].result);
             });
     };
 
@@ -144,6 +156,7 @@ export const AccountProvider = ({ children }) => {
                 isInGame,
                 isReady,
                 initialFlowRate,
+                symbol,
             }}
         >
             {children}

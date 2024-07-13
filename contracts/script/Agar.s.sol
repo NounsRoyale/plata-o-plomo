@@ -7,8 +7,13 @@ import {MintableSuperToken} from "@supertokens/MintableSuperToken.sol";
 import {CFAv1Forwarder} from "@superfluid-finance/ethereum-contracts/contracts/utils/CFAv1Forwarder.sol";
 import {Game} from "../src/Game.sol";
 import {UUPSProxy} from "../src/UUPSProxy.sol";
+import {SuperTokenV1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperTokenV1Library.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract AgarScript is BaseScript {
+    using SuperTokenV1Library for ISuperToken;
+    address backendAdmin = 0xe7e37649f37Ed6665260316413fdfe89f8edadb6;
+
     address opSepoliaSuperTokenFactory =
         0xfcF0489488397332579f35b0F711BE570Da0E8f5;
     address sepoliaSuperTokenFactory =
@@ -19,6 +24,19 @@ contract AgarScript is BaseScript {
         CFAv1Forwarder(0xcfA132E353cB4E398080B9700609bb008eceB125);
 
     function setUp() public {}
+
+    function upgradeNoun(DeployementChain chain) public broadcastOn(chain) {
+        (, address sender, ) = vm.readCallers();
+        ISuperToken token = ISuperToken(payable(_readDeployment("Life")));
+
+        console.log(token.getUnderlyingToken());
+        console.log(IERC20(token.getUnderlyingToken()).balanceOf(sender));
+
+        IERC20(token.getUnderlyingToken()).approve(address(token), 2000 ether);
+        token.upgrade(2000 ether);
+
+        token.transferFrom(sender, backendAdmin, 2000 ether);
+    }
 
     function grantPerm(DeployementChain chain) public {
         vm.createSelectFork(forks[chain]);
@@ -56,13 +74,13 @@ contract AgarScript is BaseScript {
     }
 
     function deployGame(DeployementChain chain) public broadcastOn(chain) {
-        address backendAdmin = 0xe7e37649f37Ed6665260316413fdfe89f8edadb6;
-
         MintableSuperToken token = MintableSuperToken(
             payable(_readDeployment("Life"))
         );
 
-        token.mint(backendAdmin, 1_000_000_000 ether, "");
+        if (block.chainid == 11155111) {
+            token.mint(backendAdmin, 1_000_000_000 ether, "");
+        }
 
         Game game = _deployUpgradeableGame(backendAdmin, address(token));
 
@@ -101,7 +119,8 @@ contract AgarScript is BaseScript {
                         Game.initialize.selector,
                         admin,
                         lifeToken,
-                        1 ether
+                        1 * 1e16, // 1 $LIFE per seco
+                        0 ether
                     )
                 )
             )

@@ -159,6 +159,7 @@ contract AgarTest is Test {
                         Game.initialize.selector,
                         deployer,
                         sepoliaLifeToken,
+                        1 * 1e18,
                         1 ether
                     )
                 )

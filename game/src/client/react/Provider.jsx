@@ -14,7 +14,9 @@ const config = createConfig({
     multiInjectedProviderDiscovery: false,
     transports: {
         [sepolia.id]: http(),
-        [base.id]: http(),
+        [base.id]: http(
+            "https://base-mainnet.g.alchemy.com/v2/q0X3u1T5baZyZ5xkanJwB5AyVhVmOQC0"
+        ),
     },
 });
 

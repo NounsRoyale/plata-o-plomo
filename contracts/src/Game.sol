@@ -24,7 +24,7 @@ contract Game is IGame, AccessControlUpgradeable, UUPSUpgradeable {
     /**
      * @dev Base flow rate for the game
      */
-    int96 public constant BASE_FLOW_RATE = 1 * 1e18; // 1 $LIFE per second
+    int96 public BASE_FLOW_RATE = 1 * 1e18; // 1 $LIFE per second
 
     /**
      * @dev Maximum basis points for percentage calculations
@@ -51,6 +51,7 @@ contract Game is IGame, AccessControlUpgradeable, UUPSUpgradeable {
     function initialize(
         address _lifePool,
         ISuperToken _life,
+        int96 _baseFlowRate,
         uint256 nativePrice
     ) public initializer {
         __AccessControl_init();
@@ -58,6 +59,7 @@ contract Game is IGame, AccessControlUpgradeable, UUPSUpgradeable {
 
         life = _life;
         lifePool = _lifePool;
+        BASE_FLOW_RATE = _baseFlowRate;
         // Enable native currency
         gameCurrencies[address(0)].enabled = true;
         gameCurrencies[address(0)].price = nativePrice;
