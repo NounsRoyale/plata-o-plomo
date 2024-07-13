@@ -40,6 +40,10 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     global.mobile = true;
 }
 
+function nounIsPicked() {
+    return Boolean(global.img);
+}
+
 function startGame(type, playerName) {
     // global.playerName = playerNameInput.value
     //     .replace(/(<([^>]+)>)/gi, "")
@@ -91,6 +95,7 @@ window.onload = function () {
         startGame("spectator");
     };
     window.startGame = startGame;
+    window.nounIsPicked = nounIsPicked;
 
     // whenever an image is selected, it should set the global.playerName to the image name
     document.querySelectorAll("img").forEach((img) => {
@@ -484,3 +489,14 @@ function resize() {
         screenHeight: global.screen.height,
     });
 }
+
+const { default: ConnectButton } = require("../react/ConnectButton");
+const { default: Provider } = require("../react/Provider");
+
+ReactDOM.createRoot(document.getElementById("connect-button")).render(
+    <React.StrictMode>
+        <Provider>
+            <ConnectButton />
+        </Provider>
+    </React.StrictMode>
+);

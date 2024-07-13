@@ -3,6 +3,7 @@ import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { DynamicWagmiConnector } from "@dynamic-labs/wagmi-connector";
 import { createConfig, WagmiProvider } from "wagmi";
+import { AccountProvider } from "./SmartAccountContext";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http } from "viem";
@@ -23,13 +24,15 @@ const Provider = ({ children }) => {
     return (
         <DynamicContextProvider
             settings={{
-                environmentId: "c8ca5061-e827-44b4-a836-333ed59bd5a4",
+                environmentId: "3f256242-081e-4160-b7eb-8fb7e2c3b272",
                 walletConnectors: [EthereumWalletConnectors],
             }}
         >
             <WagmiProvider config={config}>
                 <QueryClientProvider client={queryClient}>
-                    <DynamicWagmiConnector>{children}</DynamicWagmiConnector>
+                    <DynamicWagmiConnector>
+                        <AccountProvider>{children}</AccountProvider>
+                    </DynamicWagmiConnector>
                 </QueryClientProvider>
             </WagmiProvider>
         </DynamicContextProvider>
