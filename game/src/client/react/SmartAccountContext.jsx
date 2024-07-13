@@ -65,7 +65,10 @@ export const AccountProvider = ({ children }) => {
         console.log(4);
         const smartAccountClient = createSmartAccountClient({
             account: simpleSmartAccountClient,
-            bundlerTransport: http(pimlicoUrl),
+            bundlerTransport: http(pimlicoUrl, {
+                // 30 seconds
+                timeout: 30000,
+            }),
             chain,
             middleware: {
                 gasPrice: async () =>

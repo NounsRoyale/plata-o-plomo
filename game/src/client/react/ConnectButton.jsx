@@ -72,6 +72,8 @@ const ConnectButton = () => {
                                         await pubClient.waitForTransactionReceipt(
                                             {
                                                 hash,
+                                                // 30 seconds
+                                                timeout: 30000,
                                             }
                                         );
 

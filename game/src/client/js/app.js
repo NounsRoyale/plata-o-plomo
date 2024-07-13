@@ -380,7 +380,7 @@ function gameLoop() {
         graph.fillStyle = global.backgroundColor;
         graph.fillRect(0, 0, global.screen.width, global.screen.height);
 
-        render.drawGrid(global, player, global.screen, graph);
+        // render.drawGrid(global, player, global.screen, graph);
         foods.forEach((food) => {
             let position = getPosition(food, player, global.screen);
             render.drawFood(position, food, graph);
