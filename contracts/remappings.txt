@@ -3,3 +3,4 @@ forge-std/=lib/forge-std/src/
 @superfluid-finance/=lib/protocol-monorepo/packages
 @supertokens/=lib/custom-supertokens/contracts
 @openzeppelin/=lib/openzeppelin-contracts
+@openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts

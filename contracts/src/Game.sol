@@ -2,17 +2,18 @@
 pragma solidity ^0.8.13;
 
 import {IGame, GameCurrency} from "./IGame.sol";
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ISuperToken} from "@superfluid/interfaces/superfluid/ISuperToken.sol";
 import {SuperTokenV1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperTokenV1Library.sol";
+import {AccessControlUpgradeable} from "@openzeppelin-contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin-contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
  * @title Game contract
  * @dev Game contract that allows players to enter the game and start streaming $LIFE tokens.
  * The game admin can eat the flow of a player and exit the game.
  */
-contract Game is IGame, AccessControl {
+contract Game is IGame, AccessControlUpgradeable, UUPSUpgradeable {
     using SuperTokenV1Library for ISuperToken;
 
     /**
@@ -45,7 +46,16 @@ contract Game is IGame, AccessControl {
      */
     mapping(address => GameCurrency) public gameCurrencies;
 
-    constructor(address _lifePool, ISuperToken _life, uint256 nativePrice) {
+    constructor() {}
+
+    function initialize(
+        address _lifePool,
+        ISuperToken _life,
+        uint256 nativePrice
+    ) public initializer {
+        __AccessControl_init();
+        __UUPSUpgradeable_init();
+
         life = _life;
         lifePool = _lifePool;
         // Enable native currency
@@ -59,14 +69,20 @@ contract Game is IGame, AccessControl {
      * @param player Player entering the game
      * @param currency Currency used to pay the entry fee
      */
-    function enter(address player, address currency) external payable override {
+    function enter(
+        address player,
+        address currency,
+        bytes memory userData
+    ) external payable override {
+        require(!_isInGame(player), "Game: player already in game");
+
         // Pay to enter the game
         _handlePayments(player, currency);
 
         // Start streaming $LIFE tokens to the player
         life.createFlowFrom(lifePool, player, BASE_FLOW_RATE);
 
-        emit Entered(player, currency);
+        emit Entered(player, currency, userData);
     }
 
     /**
@@ -81,6 +97,10 @@ contract Game is IGame, AccessControl {
         // Percentage of the flow rate to be eaten based on MAX_BPS
         uint256 percentageEaten
     ) external override onlyRole(GAME_ADMIN_ROLE) {
+        require(
+            _isInGame(playerEating) && _isInGame(playerEaten),
+            "Game: players not in game"
+        );
         require(
             percentageEaten <= MAX_BPS,
             "Game: percentageEaten should be less than or equal to MAX_BPS"
@@ -117,6 +137,7 @@ contract Game is IGame, AccessControl {
      * @param player Player exiting the game
      */
     function exit(address player) external override onlyRole(GAME_ADMIN_ROLE) {
+        require(_isInGame(player), "Game: player not in game");
         // Exit the game (delete the flow)
         life.deleteFlowFrom(lifePool, player);
 
@@ -138,4 +159,13 @@ contract Game is IGame, AccessControl {
             revert("Game: ERC20 not supported");
         }
     }
+
+    function _isInGame(address player) internal view returns (bool) {
+        (, int96 flowRate, , ) = life.getFlowInfo(lifePool, player);
+        return flowRate > 0;
+    }
+
+    function _authorizeUpgrade(
+        address
+    ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }

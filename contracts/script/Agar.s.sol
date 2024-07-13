@@ -6,6 +6,7 @@ import {ISuperToken} from "@superfluid/interfaces/superfluid/ISuperToken.sol";
 import {MintableSuperToken} from "@supertokens/MintableSuperToken.sol";
 import {CFAv1Forwarder} from "@superfluid-finance/ethereum-contracts/contracts/utils/CFAv1Forwarder.sol";
 import {Game} from "../src/Game.sol";
+import {UUPSProxy} from "../src/UUPSProxy.sol";
 
 contract AgarScript is BaseScript {
     address sepoliaSuperTokenFactory =
@@ -14,22 +15,6 @@ contract AgarScript is BaseScript {
         CFAv1Forwarder(0xcfA132E353cB4E398080B9700609bb008eceB125);
 
     function setUp() public {}
-
-    function grantAdminGameRole(
-        DeployementChain chain
-    ) public broadcastOn(chain) {
-        (, address sender, ) = vm.readCallers();
-
-        address backendAdmin = 0xe7e37649f37Ed6665260316413fdfe89f8edadb6;
-        Game game = Game(_readDeployment("Game"));
-
-        game.grantRole(game.GAME_ADMIN_ROLE(), backendAdmin);
-
-        cfaV1Sepolia.grantPermissions(
-            ISuperToken(_readDeployment("Life")),
-            address(game)
-        );
-    }
 
     function deployGame(DeployementChain chain) public broadcastOn(chain) {
         (, address sender, ) = vm.readCallers();
@@ -42,10 +27,13 @@ contract AgarScript is BaseScript {
 
         token.mint(backendAdmin, 1_000_000_000 ether, "");
 
-        Game game = new Game(
-            backendAdmin,
-            ISuperToken(payable(token)),
-            0.01 ether
+        Game game = _deployUpgradeableGame(backendAdmin, address(token));
+
+        game.grantRole(game.GAME_ADMIN_ROLE(), backendAdmin);
+
+        cfaV1Sepolia.grantPermissions(
+            ISuperToken(_readDeployment("Life")),
+            address(game)
         );
 
         _saveDeployment(address(game), "Game");
@@ -60,5 +48,26 @@ contract AgarScript is BaseScript {
         token.mint(sender, 1_000_000_000 ether, "");
 
         _saveDeployment(address(token), "Life");
+    }
+
+    function _deployUpgradeableGame(
+        address admin,
+        address lifeToken
+    ) internal returns (Game game) {
+        Game newGame = new Game();
+
+        game = Game(
+            address(
+                new UUPSProxy(
+                    address(newGame),
+                    abi.encodeWithSelector(
+                        Game.initialize.selector,
+                        admin,
+                        lifeToken,
+                        1 ether
+                    )
+                )
+            )
+        );
     }
 }

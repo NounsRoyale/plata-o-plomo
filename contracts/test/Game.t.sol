@@ -7,6 +7,7 @@ import {MintableSuperToken} from "@supertokens/MintableSuperToken.sol";
 import {Game} from "../src/Game.sol";
 import {IConstantFlowAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
 import {CFAv1Forwarder} from "@superfluid-finance/ethereum-contracts/contracts/utils/CFAv1Forwarder.sol";
+import {UUPSProxy} from "../src/UUPSProxy.sol";
 
 contract AgarTest is Test {
     address deployer = 0x4D5BA70D2f7bD991BF09A5979e5F5e7dCAD04679;
@@ -21,7 +22,7 @@ contract AgarTest is Test {
     function setUp() public {
         vm.createSelectFork("sepolia");
 
-        game = new Game(deployer, sepoliaLifeToken, 1 ether);
+        _deployUpgradeableGame();
 
         vm.prank(deployer);
         game.grantRole(game.GAME_ADMIN_ROLE(), gameAdmin);
@@ -55,7 +56,7 @@ contract AgarTest is Test {
         vm.deal(player_one, 1 ether);
 
         vm.prank(player_one);
-        game.enter{value: 1 ether}(player_one, address(0));
+        game.enter{value: 1 ether}(player_one, address(0), "");
 
         vm.warp(block.timestamp + 1 days);
 
@@ -79,10 +80,10 @@ contract AgarTest is Test {
         vm.deal(player_two, 1 ether);
 
         vm.prank(player_one);
-        game.enter{value: 1 ether}(player_one, address(0));
+        game.enter{value: 1 ether}(player_one, address(0), "");
 
         vm.prank(player_two);
-        game.enter{value: 1 ether}(player_two, address(0));
+        game.enter{value: 1 ether}(player_two, address(0), "");
 
         // Eating half of player_one's flow
         vm.prank(gameAdmin);
@@ -109,6 +110,17 @@ contract AgarTest is Test {
         );
     }
 
+    function testEnterTwice() public {
+        address player_one = vm.addr(99);
+        vm.deal(player_one, 1 ether);
+
+        vm.prank(player_one);
+        game.enter{value: 1 ether}(player_one, address(0), "");
+
+        vm.expectRevert("Game: player already in game");
+        game.enter{value: 1 ether}(player_one, address(0), "");
+    }
+
     /**
      * EAT
      */
@@ -121,10 +133,10 @@ contract AgarTest is Test {
         vm.deal(player_two, 1 ether);
 
         vm.prank(player_one);
-        game.enter{value: 1 ether}(player_one, address(0));
+        game.enter{value: 1 ether}(player_one, address(0), "");
 
         vm.prank(player_two);
-        game.enter{value: 1 ether}(player_two, address(0));
+        game.enter{value: 1 ether}(player_two, address(0), "");
 
         // Eating half of player_one's flow
         vm.prank(gameAdmin);
@@ -132,5 +144,25 @@ contract AgarTest is Test {
             "Game: percentageEaten should be less than or equal to MAX_BPS"
         );
         game.eat(player_one, player_two, 500000);
+    }
+
+    // Internal functions
+
+    function _deployUpgradeableGame() internal {
+        Game newGame = new Game();
+
+        game = Game(
+            address(
+                new UUPSProxy(
+                    address(newGame),
+                    abi.encodeWithSelector(
+                        Game.initialize.selector,
+                        deployer,
+                        sepoliaLifeToken,
+                        1 ether
+                    )
+                )
+            )
+        );
     }
 }

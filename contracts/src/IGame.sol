@@ -7,7 +7,11 @@ struct GameCurrency {
 }
 
 interface IGame {
-    event Entered(address indexed player, address indexed currency);
+    event Entered(
+        address indexed player,
+        address indexed currency,
+        bytes userData
+    );
 
     event Ate(
         address indexed playerEating,
@@ -22,7 +26,11 @@ interface IGame {
      * @dev This function should be called by the player to enter the game
      * & pay the entry fee
      */
-    function enter(address player, address currency) external payable;
+    function enter(
+        address player,
+        address currency,
+        bytes memory userData
+    ) external payable;
 
     /**
      * @dev Eat the food
