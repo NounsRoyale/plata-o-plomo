@@ -1,3 +1,5 @@
+const global = require("./global");
+
 const FULL_ANGLE = 2 * Math.PI;
 
 const drawRoundObject = (position, radius, graph) => {
@@ -23,27 +25,26 @@ const drawRoundObject = (position, radius, graph) => {
 };
 
 const drawFood = (position, food, graph) => {
-    graph.fillStyle = "hsl(" + food.hue + ", 100%, 50%)";
-    graph.strokeStyle = "hsl(" + food.hue + ", 100%, 45%)";
-    graph.lineWidth = 0;
-    drawRoundObject(position, food.radius, graph);
+    const size = 30;
+    const image = new Image(size, size);
+    const foods = [
+        global.itemImages.cheese,
+        global.itemImages.cherry,
+        global.itemImages.steak,
+    ];
+    const remainderOfFloat = food.mass % 1;
+    // Randomly select a food image
+    image.src = foods[Math.floor(remainderOfFloat * foods.length)];
+
+    graph.drawImage(image, position.x, position.y, size, size);
 };
 
 const drawVirus = (position, virus, graph) => {
-    graph.strokeStyle = virus.stroke;
-    graph.fillStyle = virus.fill;
-    graph.lineWidth = virus.strokeWidth;
-    let theta = 0;
-    let sides = 20;
+    const image = new Image(100, 100);
 
-    graph.beginPath();
-    for (let theta = 0; theta < FULL_ANGLE; theta += FULL_ANGLE / sides) {
-        let point = circlePoint(position, virus.radius, theta);
-        graph.lineTo(point.x, point.y);
-    }
-    graph.closePath();
-    graph.stroke();
-    graph.fill();
+    image.src = global.itemImages.bomb;
+
+    graph.drawImage(image, position.x, position.y, 100, 100);
 };
 
 const drawFireFood = (position, mass, playerConfig, graph) => {
