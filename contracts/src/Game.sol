@@ -144,6 +144,13 @@ contract Game is IGame, AccessControlUpgradeable, UUPSUpgradeable {
         emit Exited(player);
     }
 
+    function updateGamePrice(
+        address currency,
+        uint256 price
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        gameCurrencies[currency].price = price;
+    }
+
     // Internal methods
 
     function _handlePayments(address from, address currency) internal {

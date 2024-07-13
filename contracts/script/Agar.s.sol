@@ -16,6 +16,22 @@ contract AgarScript is BaseScript {
 
     function setUp() public {}
 
+    function updatePrice(DeployementChain chain) public broadcastOn(chain) {
+        (, address sender, ) = vm.readCallers();
+        Game game = Game(payable(_readDeployment("Game")));
+
+        game.updateGamePrice(address(0), 0 ether);
+    }
+
+    function upgradeGame(DeployementChain chain) public broadcastOn(chain) {
+        (, address sender, ) = vm.readCallers();
+        Game game = Game(payable(_readDeployment("Game")));
+
+        Game newGame = new Game();
+
+        game.upgradeTo(address(newGame));
+    }
+
     function deployGame(DeployementChain chain) public broadcastOn(chain) {
         (, address sender, ) = vm.readCallers();
 
