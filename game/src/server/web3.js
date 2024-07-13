@@ -1,6 +1,6 @@
 const { createWalletClient, createPublicClient, http } = require("viem");
 const { sepolia } = require("viem/chains");
-const { gameContract } = require("../contract/game");
+const { gameContract } = require(__dirname + "/../contract/game");
 const { privateKeyToAccount } = require("viem/accounts");
 
 const account = privateKeyToAccount(process.env.PRIVATE_KEY);
