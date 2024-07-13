@@ -1,8 +1,22 @@
 const FULL_ANGLE = 2 * Math.PI;
 
 const drawRoundObject = (position, radius, graph) => {
+    const sides = 12; // Dodecagon for a more circular appearance
+    const angleStep = FULL_ANGLE / sides;
+
     graph.beginPath();
-    graph.arc(position.x, position.y, radius, 0, FULL_ANGLE);
+    for (let i = 0; i < sides; i++) {
+        const theta = i * angleStep;
+        const point = {
+            x: position.x + radius * Math.cos(theta),
+            y: position.y + radius * Math.sin(theta),
+        };
+        if (i === 0) {
+            graph.moveTo(point.x, point.y);
+        } else {
+            graph.lineTo(point.x, point.y);
+        }
+    }
     graph.closePath();
     graph.fill();
     graph.stroke();
@@ -100,24 +114,49 @@ const drawCells = (cells, playerConfig, toggleMassState, borders, graph) => {
         graph.font = "bold " + fontSize + "px sans-serif";
         // graph.strokeText(cell.name, cell.x, cell.y);
         // graph.fillText(cell.name, cell.x, cell.y);
-        // if(cell.name === 'dog') {
-        // <div id="noun1" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
-        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_1.png"
-        //             class="rounded-lg" data-name="noun1" />
-        //     </div>
-        //     <div id="noun2" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
-        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_2.png"
-        //             class="rounded-lg" data-name="noun2" />
-        //     </div>
-        //     <div id="noun3" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
-        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun.png"
-        //             class="rounded-lg" data-name="noun3" />
-        //     </div>
-        //     <div id="noun4" class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500">
-        //         <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_3.png"
-        //             class="rounded-lg" data-name="noun4" />
-        //     </div>
         cell.skin = new Image();
+        <div class="flex gap-4">
+            <div
+                id="noun5"
+                class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500"
+            >
+                <img
+                    src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_9.png"
+                    class="rounded-lg"
+                    data-name="noun5"
+                />
+            </div>
+            <div
+                id="noun6"
+                class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500"
+            >
+                <img
+                    src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_10.png"
+                    class="rounded-lg"
+                    data-name="noun6"
+                />
+            </div>
+            <div
+                id="noun7"
+                class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500"
+            >
+                <img
+                    src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_6.png"
+                    class="rounded-lg"
+                    data-name="noun7"
+                />
+            </div>
+            <div
+                id="noun8"
+                class="w-1/2 cursor-pointer rounded-lg border hover:border-blue-500"
+            >
+                <img
+                    src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_7.png"
+                    class="rounded-lg"
+                    data-name="noun8"
+                />
+            </div>
+        </div>;
         if (cell.img === "noun1") {
             cell.skin.src =
                 "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_1.png";
@@ -130,6 +169,18 @@ const drawCells = (cells, playerConfig, toggleMassState, borders, graph) => {
         } else if (cell.img === "noun4") {
             cell.skin.src =
                 "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720774464/noun_3.png";
+        } else if (cell.img === "noun5") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_9.png";
+        } else if (cell.img === "noun6") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_10.png";
+        } else if (cell.img === "noun7") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_6.png";
+        } else if (cell.img === "noun8") {
+            cell.skin.src =
+                "https://res.cloudinary.com/brunoeleodoro/image/upload/v1720861295/noun_7.png";
         }
 
         graph.save();

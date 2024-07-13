@@ -34,6 +34,14 @@ function startGame(type, playerName) {
     // global.playerName = playerNameInput.value
     //     .replace(/(<([^>]+)>)/gi, "")
     //     .substring(0, 25);
+    if (!playerName) {
+        window.alert("Please enter a name");
+        return;
+    }
+    if (!global.img) {
+        window.alert("Please select your nouns image");
+        return;
+    }
     global.playerName = playerName;
     global.playerType = type;
 

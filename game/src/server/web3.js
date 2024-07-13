@@ -16,6 +16,7 @@ const clientPublic = createPublicClient({
 
 export async function useGameExit(address) {
     try {
+        console.log("Exiting the game...", address);
         const { request } = await clientPublic.simulateContract({
             account,
             address: gameContract.address,
@@ -23,7 +24,8 @@ export async function useGameExit(address) {
             functionName: "exit",
             args: [address],
         });
-        await clientWallet.writeContract(request);
+        const res = await clientWallet.writeContract(request);
+        console.log("Exited the game", address, res);
     } catch (ex) {
         console.log("Failed to exit the game", ex);
     }
