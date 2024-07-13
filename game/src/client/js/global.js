@@ -20,6 +20,11 @@ module.exports = {
         width: 0,
         height: 0,
     },
+    // Player
+    player: {
+        initialFlowRate: BigInt(0),
+        balance: BigInt(0),
+    },
     gameStart: false,
     disconnected: false,
     kicked: false,

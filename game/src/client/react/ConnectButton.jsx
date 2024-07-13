@@ -13,7 +13,7 @@ const ConnectButton = () => {
     const { isAuthenticated } = useDynamicContext();
     const pubClient = usePublicClient();
     const [isLoading, setIsLoading] = React.useState(false);
-    const { account, isInGame, balance, isReady } =
+    const { account, isInGame, balance, isReady, initialFlowRate } =
         React.useContext(SmartAccountContext);
 
     return (
@@ -80,7 +80,12 @@ const ConnectButton = () => {
                                     console.log({ rcpt });
                                 }
 
-                                window.startGame("player", playerName);
+                                window.startGame({
+                                    type: "player",
+                                    playerName,
+                                    initialFlowRate,
+                                    balance,
+                                });
                                 setIsLoading(false);
                             } catch (error) {
                                 setIsLoading(false);

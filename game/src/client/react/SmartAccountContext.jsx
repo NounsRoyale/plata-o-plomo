@@ -17,6 +17,7 @@ import { usePublicClient } from "wagmi";
 export const SmartAccountContext = React.createContext({
     account: null,
     balance: null,
+    initialFlowRate: BigInt(0),
     isInGame: null,
     isReady: false,
 });
@@ -29,6 +30,7 @@ export const AccountProvider = ({ children }) => {
     const [balance, setBalance] = React.useState(null);
     const [isInGame, setIsInGame] = React.useState(null);
     const [isReady, setIsReady] = React.useState(false);
+    const [initialFlowRate, setInitialFlowRate] = React.useState(0);
 
     const loadAccount = async () => {
         const pimlicoKey = "3fac7f38-a857-468a-a471-20f077048d26";
@@ -86,24 +88,40 @@ export const AccountProvider = ({ children }) => {
             },
         });
 
-        const balance = await pubClient.readContract({
-            address: lifeToken.address,
-            abi: erc20Abi,
-            functionName: "balanceOf",
-            args: [smartAccountClient.account.address],
-        });
-
-        const isInGame = await pubClient.readContract({
-            address: gameContract.address,
-            abi: gameContract.abi,
-            functionName: "isInGame",
-            args: [smartAccountClient.account.address],
-        });
-
         setClient(smartAccountClient);
-        setBalance(balance);
-        setIsInGame(isInGame);
         setIsReady(true);
+    };
+
+    const fetchData = async () => {
+        if (!client) return;
+        await pubClient
+            .multicall({
+                contracts: [
+                    {
+                        address: lifeToken.address,
+                        abi: erc20Abi,
+                        functionName: "balanceOf",
+                        args: [client.account.address],
+                    },
+                    {
+                        address: gameContract.address,
+                        abi: gameContract.abi,
+                        functionName: "isInGame",
+                        args: [client.account.address],
+                    },
+                    {
+                        address: gameContract.address,
+                        abi: gameContract.abi,
+                        functionName: "BASE_FLOW_RATE",
+                        args: [],
+                    },
+                ],
+            })
+            .then((data) => {
+                setBalance(data[0].result);
+                setIsInGame(data[1].result);
+                setInitialFlowRate(data[2].result);
+            });
     };
 
     React.useEffect(() => {
@@ -111,6 +129,13 @@ export const AccountProvider = ({ children }) => {
             loadAccount();
         }
     }, [walletClient]);
+
+    React.useEffect(() => {
+        if (client) {
+            fetchData();
+        }
+    }, [client]);
+
     return (
         <SmartAccountContext.Provider
             value={{

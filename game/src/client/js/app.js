@@ -23,7 +23,7 @@ function nounIsPicked() {
     return Boolean(global.img);
 }
 
-function startGame(type, playerName) {
+function startGame({ type, playerName, initialFlowRate, balance }) {
     // global.playerName = playerNameInput.value
     //     .replace(/(<([^>]+)>)/gi, "")
     //     .substring(0, 25);
@@ -37,6 +37,10 @@ function startGame(type, playerName) {
     }
     global.playerName = playerName;
     global.playerType = type;
+    global.player = {
+        balance,
+        initialFlowRate,
+    };
 
     global.screen.width = window.innerWidth;
     global.screen.height = window.innerHeight;
