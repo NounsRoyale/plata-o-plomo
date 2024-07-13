@@ -143,6 +143,7 @@ export const AccountProvider = ({ children }) => {
                 balance,
                 isInGame,
                 isReady,
+                initialFlowRate,
             }}
         >
             {children}

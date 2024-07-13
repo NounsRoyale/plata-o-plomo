@@ -5,6 +5,7 @@ var render = require("./render");
 var ChatClient = require("./chat-client");
 var Canvas = require("./canvas");
 var global = require("./global");
+const { default: FlowingBalance } = require("../react/FlowingBalance");
 
 var playerNameInput = document.getElementById("playerNameInput");
 var socket;
@@ -41,6 +42,18 @@ function startGame({ type, playerName, initialFlowRate, balance }) {
         balance,
         initialFlowRate,
     };
+
+    console.log(global.player);
+
+    ReactDOM.createRoot(document.getElementById("points")).render(
+        <React.StrictMode>
+            <FlowingBalance
+                startingBalance={global.player.balance}
+                startingBalanceDate={new Date()}
+                flowRate={global.player.initialFlowRate}
+            />
+        </React.StrictMode>
+    );
 
     global.screen.width = window.innerWidth;
     global.screen.height = window.innerHeight;
@@ -475,17 +488,6 @@ function resize() {
 
 const { default: Provider } = require("../react/Provider");
 const { default: ConnectButton } = require("../react/ConnectButton");
-const { default: FlowingBalance } = require("../react/FlowingBalance");
-
-ReactDOM.createRoot(document.getElementById("points")).render(
-    <React.StrictMode>
-        <FlowingBalance
-            startingBalance={BigInt("1000000000000000000")}
-            startingBalanceDate={new Date("2024-01-01T00:00:00.000Z")}
-            flowRate={BigInt("1000000000000000")}
-        />
-    </React.StrictMode>
-);
 
 ReactDOM.createRoot(document.getElementById("connect-button")).render(
     <React.StrictMode>
