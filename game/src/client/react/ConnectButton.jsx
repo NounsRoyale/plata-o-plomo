@@ -45,6 +45,10 @@ const ConnectButton = () => {
                         className={`relative mx-auto mt-2 w-full h-10 box-border text-lg text-white text-center shadow-inner bg-green-500 border-b-2 border-green-600 cursor-pointer rounded mb-2 hover:bg-green-400`}
                         disabled={isLoading}
                         onClick={async () => {
+                            if (!window.nounIsPicked()) {
+                                alert("Please pick a noun before playing");
+                                return;
+                            }
                             if (!account) return;
                             setIsLoading(true);
 
