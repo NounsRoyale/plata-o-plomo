@@ -6,27 +6,6 @@ var ChatClient = require("./chat-client");
 var Canvas = require("./canvas");
 var global = require("./global");
 
-const { default: ConnectButton } = require("../react/ConnectButton");
-const { default: Provider } = require("../react/Provider");
-const { default: FlowingBalance } = require("../react/FlowingBalance");
-
-ReactDOM.createRoot(document.getElementById("connect-button")).render(
-    <React.StrictMode>
-        <Provider>
-            <ConnectButton />
-        </Provider>
-    </React.StrictMode>
-);
-ReactDOM.createRoot(document.getElementById("points")).render(
-    <React.StrictMode>
-        <FlowingBalance
-            startingBalance={BigInt("1000000000000000000")}
-            startingBalanceDate={new Date("2024-01-01T00:00:00.000Z")}
-            flowRate={BigInt("1000000000000000")}
-        />
-    </React.StrictMode>
-);
-
 var playerNameInput = document.getElementById("playerNameInput");
 var socket;
 
@@ -490,8 +469,19 @@ function resize() {
     });
 }
 
-const { default: ConnectButton } = require("../react/ConnectButton");
 const { default: Provider } = require("../react/Provider");
+const { default: ConnectButton } = require("../react/ConnectButton");
+const { default: FlowingBalance } = require("../react/FlowingBalance");
+
+ReactDOM.createRoot(document.getElementById("points")).render(
+    <React.StrictMode>
+        <FlowingBalance
+            startingBalance={BigInt("1000000000000000000")}
+            startingBalanceDate={new Date("2024-01-01T00:00:00.000Z")}
+            flowRate={BigInt("1000000000000000")}
+        />
+    </React.StrictMode>
+);
 
 ReactDOM.createRoot(document.getElementById("connect-button")).render(
     <React.StrictMode>
