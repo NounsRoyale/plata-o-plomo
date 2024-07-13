@@ -62,6 +62,14 @@ export const AccountProvider = ({ children }) => {
             }
         );
 
+        const moreGas = (gas) => {
+            const { maxFeePerGas, maxPriorityFeePerGas } = gas;
+            return {
+                maxFeePerGas: maxFeePerGas * BigInt(2),
+                maxPriorityFeePerGas: maxPriorityFeePerGas * BigInt(2),
+            };
+        };
+
         console.log(4);
         const smartAccountClient = createSmartAccountClient({
             account: simpleSmartAccountClient,
@@ -72,7 +80,7 @@ export const AccountProvider = ({ children }) => {
             chain,
             middleware: {
                 gasPrice: async () =>
-                    (await bundler.getUserOperationGasPrice()).fast,
+                    moreGas((await bundler.getUserOperationGasPrice()).fast),
                 sponsorUserOperation:
                     pimlicoPaymasterClient.sponsorUserOperation,
             },
