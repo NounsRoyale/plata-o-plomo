@@ -378,6 +378,7 @@ const tickGame = () => {
             gotEaten.playerIndex,
             gotEaten.cellIndex
         );
+
         if (playerDied) {
             let playerGotEaten = map.players.data[gotEaten.playerIndex];
             io.emit("playerDied", { name: playerGotEaten.name }); //TODO: on client it is `playerEatenName` instead of `name`
@@ -391,7 +392,7 @@ const tickGame = () => {
             useGameEat(
                 map.players.data[eater.playerIndex].name,
                 playerGotEaten.name,
-                cellGotEaten.mass
+                100 * 100
             );
         }
     });
