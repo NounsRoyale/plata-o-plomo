@@ -22,27 +22,44 @@
             font-family: 'Londrina Solid', cursive;
             background-color: rgb(225, 215, 213);
         }
+
+        #points {
+            -webkit-transform-style: preserve-3d;
+            -moz-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-backface-visibility: hidden;
+            -moz-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
     </style>
 </head>
 
 <body>
     <div id="gameAreaWrapper" class="absolute top-0 left-0 opacity-0">
+        <div id="endGame"
+            class="absolute p-2 bg-black bg-opacity-40 text-white text-lg font-bold text-center top-2 left-2">
+            <span class="title text-2xl cursor-pointer">End Game</span>
+        </div>
+        <!-- top center -->
+        <div id="points"
+            class="absolute p-2 bg-black bg-opacity-40 text-white text-lg font-bold text-center top-2 left-1/2 transform -translate-x-1/2">
+        </div>
         <div id="status"
             class="absolute p-2 bg-black bg-opacity-40 text-white text-lg font-bold text-center top-2 right-2">
             <span class="title text-2xl">Leaderboard</span>
         </div>
         <div id="chatbox"
-            class="chatbox absolute w-72 h-80 bg-black bg-opacity-70 bottom-1 left-1 rounded pointer-events-none">
+            class="chatbox absolute w-72 h-80 bg-black bg-opacity-70 bottom-1 left-1 rounded pointer-events-none hidden">
             <ul id="chatList" class="chat-list p-1 m-0 list-none box-border h-[285px] overflow-hidden"></ul>
             <input id="chatInput" type="text"
                 class="chat-input pointer-events-auto box-border w-full p-2 bg-transparent border-none border-t border-gray-300 outline-none"
                 placeholder="Chat here..." maxlength="35" />
         </div>
         <div id="mobile">
-            <input type="image" id="split" class="split absolute bottom-2 left-2 w-24 h-24 p-1 border-none"
+            <!-- <input type="image" id="split" class="split absolute bottom-2 left-2 w-24 h-24 p-1 border-none"
                 src="img/split.png" alt="splitBtn">
             <input type="image" id="feed" class="feed absolute bottom-2 right-2 w-24 h-24 p-1 border-none"
-                src="img/feed.png" alt="feedBtn">
+                src="img/feed.png" alt="feedBtn"> -->
         </div>
         <canvas tabindex="1" id="cvs" class="w-full h-full bg-black bg-opacity-40"></canvas>
     </div>

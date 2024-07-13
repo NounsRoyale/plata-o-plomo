@@ -8,12 +8,22 @@ var global = require("./global");
 
 const { default: ConnectButton } = require("../react/ConnectButton");
 const { default: Provider } = require("../react/Provider");
+const { default: FlowingBalance } = require("../react/FlowingBalance");
 
 ReactDOM.createRoot(document.getElementById("connect-button")).render(
     <React.StrictMode>
         <Provider>
             <ConnectButton />
         </Provider>
+    </React.StrictMode>
+);
+ReactDOM.createRoot(document.getElementById("points")).render(
+    <React.StrictMode>
+        <FlowingBalance
+            startingBalance={BigInt("1000000000000000000")}
+            startingBalanceDate={new Date("2024-01-01T00:00:00.000Z")}
+            flowRate={BigInt("1000000000000000")}
+        />
     </React.StrictMode>
 );
 
@@ -93,6 +103,7 @@ window.onload = function () {
             img.style.border = "2px solid blue"; // Highlight the selected image
         });
     });
+    document.querySelectorAll("img")[0].click(); // Select the first image by default
     // btn.addEventListener("click", function () {
     //     if (validNick()) {
     //         startGame("player");
@@ -189,6 +200,20 @@ function handleDisconnect() {
 
 // socket stuff.
 function setupSocket(socket) {
+    function youDied(customMsg = "Yoiu died!") {
+        global.gameStart = false;
+        render.drawErrorMessage(customMsg, graph, global.screen);
+        window.setTimeout(() => {
+            document.getElementById("gameAreaWrapper").style.opacity = 0;
+            document.getElementById("startMenuWrapper").style.maxHeight =
+                "1000px";
+            document.getElementById("startMenuWrapper").style.display = "block";
+            if (global.animLoopHandle) {
+                window.cancelAnimationFrame(global.animLoopHandle);
+                global.animLoopHandle = undefined;
+            }
+        }, 2500);
+    }
     // Handle ping.
     socket.on("pongcheck", function () {
         var latency = Date.now() - global.startPingTime;
@@ -196,6 +221,11 @@ function setupSocket(socket) {
         window.chat.addSystemLine("Ping: " + latency + "ms");
     });
 
+    $("#endGame").click(() => {
+        if (confirm("Are you sure you want to end the game?")) {
+            youDied("Game over!");
+        }
+    });
     // Handle error.
     socket.on("connect_error", handleDisconnect);
     socket.on("disconnect", handleDisconnect);
@@ -253,28 +283,32 @@ function setupSocket(socket) {
     socket.on("leaderboard", (data) => {
         leaderboard = data.leaderboard;
         var status = '<span class="title">Leaderboard</span>';
+
+        const formatAddress = (address) => {
+            return (
+                address.substring(0, 6) +
+                "..." +
+                address.substring(address.length - 4)
+            );
+        };
+
         for (var i = 0; i < leaderboard.length; i++) {
             status += "<br />";
+            const formattedName =
+                leaderboard[i].name.length !== 0
+                    ? formatAddress(leaderboard[i].name)
+                    : "An unnamed cell";
             if (leaderboard[i].id == player.id) {
-                if (leaderboard[i].name.length !== 0)
-                    status +=
-                        '<span class="me">' +
-                        (i + 1) +
-                        ". " +
-                        leaderboard[i].name +
-                        "</span>";
-                else
-                    status +=
-                        '<span class="me">' +
-                        (i + 1) +
-                        ". An unnamed cell</span>";
+                status +=
+                    '<span class="me">' +
+                    (i + 1) +
+                    ". " +
+                    formattedName +
+                    "</span>";
             } else {
-                if (leaderboard[i].name.length !== 0)
-                    status += i + 1 + ". " + leaderboard[i].name;
-                else status += i + 1 + ". An unnamed cell";
+                status += i + 1 + ". " + formattedName;
             }
         }
-        //status += '<br />Players: ' + data.players;
         document.getElementById("status").innerHTML = status;
     });
 
@@ -308,18 +342,7 @@ function setupSocket(socket) {
 
     // Death.
     socket.on("RIP", function () {
-        global.gameStart = false;
-        render.drawErrorMessage("You died!", graph, global.screen);
-        window.setTimeout(() => {
-            document.getElementById("gameAreaWrapper").style.opacity = 0;
-            document.getElementById("startMenuWrapper").style.maxHeight =
-                "1000px";
-            document.getElementById("startMenuWrapper").style.display = "block";
-            if (global.animLoopHandle) {
-                window.cancelAnimationFrame(global.animLoopHandle);
-                global.animLoopHandle = undefined;
-            }
-        }, 2500);
+        youDied();
     });
 
     socket.on("kick", function (reason) {
