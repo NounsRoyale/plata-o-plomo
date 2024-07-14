@@ -9,6 +9,16 @@ Inspired in the old agar.io game, we've added a new brand look and feel to the U
 <br/>
 <img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720937152/Screenshot_2024-07-13_at_21.00.16_1.png"/>
 
+### How to run
+
+```
+cd game
+yarn install
+yarn start
+```
+
+http://localhost:3000
+
 ----- Base Contracts -----
 
 Super NOUNSx
