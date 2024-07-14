@@ -1,6 +1,13 @@
-# ETHGlobal Brussels - Plata O Plomo Game
+# ETHGlobal Brussels - Nouns Royale
 
 Inspired in the old agar.io game, we've added a new brand look and feel to the UI, using NounsDAO features and design system.
+
+<center>
+  <a href="https://nounsroyale.xyz" target="_blank">PLAY NOW</a>
+  <br/>
+</center>
+<br/>
+<img src="https://res.cloudinary.com/brunoeleodoro/image/upload/v1720937152/Screenshot_2024-07-13_at_21.00.16_1.png"/>
 
 ----- Base Contracts -----
 
